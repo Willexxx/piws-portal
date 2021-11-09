@@ -18,7 +18,7 @@
                     <h4 class="my-0 fw-normal">Temperature</h4>
                 </div>
                 <div class="card-body">
-                    <h1 class="card-title pricing-card-title">{{ temperature[1] }} <small class="text-muted fw-light">°C</small></h1>
+                    <h1 class="card-title pricing-card-title">{{ "%.2f"|format(temperature[1]) }} <small class="text-muted fw-light">°C</small></h1>
                     <center>
                         <small>{{ temperature[0].strftime('%Y-%m-%d %H:%M') }}</small>
                     </center>
@@ -31,7 +31,7 @@
                     <h4 class="my-0 fw-normal">Humidity</h4>
                 </div>
                 <div class="card-body">
-                    <h1 class="card-title pricing-card-title">{{ humidity[1] }} <small
+                    <h1 class="card-title pricing-card-title">{{ "%.2f"|format(humidity[1]) }} <small
                             class="text-muted fw-light">g/m3</small></h1>
                     <center>
                         <small>{{ humidity[0].strftime('%Y-%m-%d %H:%M') }}</small>
@@ -45,7 +45,7 @@
                     <h4 class="my-0 fw-normal">Light Level</h4>
                 </div>
                 <div class="card-body">
-                    <h1 class="card-title pricing-card-title">{{ light_level[1] }} <small class="text-muted fw-light">lumens</small></h1>
+                    <h1 class="card-title pricing-card-title">{{ "%.2f"|format(light_level[1]) }} <small class="text-muted fw-light">lumens</small></h1>
                     {% if light_level[0] -%}
                     <center>
                         <small>{{ light_level[0].strftime('%Y-%m-%d %H:%M') }}</small>

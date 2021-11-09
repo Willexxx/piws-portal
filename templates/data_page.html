@@ -2,24 +2,102 @@
 
 {% block content %}
 <h1>{{ page_title }}</h1>
-<div class="row">
-    <div class="col-md-12">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Time</th>
-                    <th>{{ column_heading }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in rows %}
-                <tr>
-                    <td>{{ row[0].strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td>{{ row[1] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" data-bs-toggle="tab" href="#table-page" id="table-tab" role="tab"
+           aria-controls="table-tab" aria-selected="true">Table</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#graph-page" id="graph-tab" role="tab" aria-controls="table-tab"
+           aria-selected="true">Graph</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="table-page" role="tabpanel" aria-labelledby="table-tab"
+         style="max-height: 768px; overflow-y: scroll">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>{{ column_heading }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr>
+                            <td>{{ row[0].strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ "%.2f"|format(row[1]) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="graph-page" role="tabpanel" aria-labelledby="graph-tab">
+        <div class="row">
+            <div class="col">
+                <div id="graph-content" style="position: relative; height: 40vh; width: 70vw;">
+                    <canvas id="myChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script lang="text/javascript">
+
+    $(document).ready(function() {
+
+        function drawChart() {
+            $.ajax("/graph?type={{type}}").done(function(content) {
+                const ctx = document.getElementById('myChart').getContext('2d');
+                const myChart = new Chart(ctx, {
+                    type: 'line',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    data: content,
+                    options: {
+                        datasets: {
+                            line: {
+                                backgroundColor: 'red',
+                                borderColor: 'red',
+                                tension: 0.5
+                            }
+                        },
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "{{column_heading}}"
+                                },
+                                beginAtZero: true
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time'
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        };
+
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            let target = $(e.target).attr("href") // activated tab
+            if (target === '#graph-page') {
+                drawChart();
+            }
+        });
+    });
+
+
+
+</script>
 {% endblock %}
