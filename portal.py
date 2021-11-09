@@ -60,4 +60,4 @@ def light_level():
     return render_template('data_page.html', rows=rows, page_title='Light Level', column_heading='Light (lumens)')
 
 
-app.run()
+app.run(host="0.0.0.0")
