@@ -1,4 +1,3 @@
-import datetime
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -15,6 +14,8 @@ def home():
     conn = psycopg2.connect("dbname=readings user=postgres")
     cur = conn.cursor()
 
+    # fetch the various metrics that are to be displayed on the home page
+    # TODO: these could probably be defined by metadata
     current_temp = get_latest_reading(cur, 'temperature')
     current_humidity = get_latest_reading(cur, 'humidity')
     current_light_level = get_latest_reading(cur, 'light')
@@ -22,6 +23,7 @@ def home():
     return render_template('home.html', temperature=current_temp, humidity=current_humidity, light_level=current_light_level)
 
 
+# Fetch the latest reading for a given meter type
 def get_latest_reading(cur, type):
     cur.execute("select time, value from readings where type = '%s' order by time DESC LIMIT 1;" % type)
     rows = cur.fetchall()
@@ -62,7 +64,8 @@ def light_level():
 
 
 @app.route('/graph')
-def graph_fragment():
+def graph_data():
+    # This endpoint returns application/JSON with the point data for a given metric type
     the_type = request.args.get('type')
     conn = psycopg2.connect("dbname=readings user=postgres")
     cur = conn.cursor()
